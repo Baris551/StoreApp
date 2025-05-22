@@ -1,14 +1,21 @@
-## Dotnet 8 Kurulum Linkleri
+# 🧵 StoreApp MVC - ASP.NET Core E-Ticaret Uygulaması
 
-Dersleri bire bir takip edebilmek için aşağıdaki versiyonları yükleyiniz.
+Bu proje, ASP.NET Core MVC ile geliştirilmiş bir e-ticaret uygulamasıdır. Kullanıcılar ürünleri kategorilere göre görüntüleyebilir, yönetici panelinden ürün ve kategori yönetimi yapılabilirsiniz. Ayrıca gerçek ödeme sistemi olarak **İyzico** entegrasyonu içerir.
 
-**Windows**
+## 🚀 Özellikler
 
-- x64  :  https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.100-windows-x64-installer
-- x86  :  https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.100-windows-x86-installer
-- Arm64:  https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.100-windows-arm64-installer
+- 📂 Kategori bazlı ürün listeleme
+- 👤 Kullanıcı profili sayfası (isim, e-posta, telefon, kayıt tarihi)
+- 🛒 Sepet ve sipariş sistemi
+- 🛠️ Admin paneli ile ürün ve kategori yönetimi
+- 💳 İyzico ile güvenli ödeme altyapısı
+- 🧱 MVC mimarisi ile düzenli, sürdürülebilir yapı
 
-**Macos**
+## 🛠️ Kullanılan Teknolojiler
 
-- Arm64:  https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.100-macos-arm64-installer
-- x64  :  https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.100-macos-x64-installer
+- ASP.NET Core MVC
+- Entity Framework Core
+- MSSQL
+- Bootstrap 5
+- İyzico API (Test & Live)
+
