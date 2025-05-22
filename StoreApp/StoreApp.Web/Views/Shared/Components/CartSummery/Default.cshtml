@@ -1,0 +1,12 @@
+﻿@model Cart
+
+<a asp-action="Index" asp-controller="Cart" title="Sepetim">
+    <span class="icon icon-shopping_cart"></span>
+    @if (Model.CartItems.Any())
+    {
+        <span class="badge bg-danger" style="font-size: 10px; vertical-align: top;">
+            @Model.CartItems.Sum(i => i.Quantity)
+        </span>
+    }
+</a>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

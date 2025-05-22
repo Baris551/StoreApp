@@ -1,0 +1,128 @@
+﻿@model StoreApp.Web.DTO.ProductDTO
+
+<div class="container mt-5">
+    <h2 class="mb-4">Yeni Ürün Ekle</h2>
+
+    <form asp-action="AddProduct" asp-controller="Admin" method="post" enctype="multipart/form-data" id="addProductForm" class="needs-validation" novalidate>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Ürün Adı</label>
+                            <input asp-for="Name" class="form-control" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="invalid-feedback">Lütfen ürün adını girin.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label fw-bold">Fiyat</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₺</span>
+                                <input asp-for="Price" class="form-control" type="number" step="0.01" required />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                            <div class="invalid-feedback">Lütfen fiyatı girin.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Açıklama</label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="ImageFile" class="form-label fw-bold">Ürün Fotoğrafı</label>
+                            <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" id="imageFile" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            <img id="imagePreview" src="#" alt="Önizleme" style="display: none; max-width: 100%; margin-top: 10px; border-radius: 5px;" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Kategoriler</label>
+                            <div class="form-check">
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" 
+                                               name="CategoryIds" 
+                                               value="@category.Id" 
+                                               class="form-check-input category-checkbox" 
+                                               id="category-@category.Id" />
+                                        <label class="form-check-label" for="category-@category.Id">
+                                            @category.Name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <span id="category-validation" class="text-danger" style="display: none;">En az bir kategori seçmelisiniz.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary me-2" id="submitButton">
+                        <span id="submitText">Ürünü Ekle</span>
+                        <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                    <a asp-action="Index" asp-controller="Admin" class="btn btn-secondary">İptal</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Resim önizleme
+        document.getElementById('imageFile').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Kategori doğrulama
+        document.getElementById('addProductForm').addEventListener('submit', function (event) {
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            const validationMessage = document.getElementById('category-validation');
+
+            if (!anyChecked) {
+                event.preventDefault();
+                validationMessage.style.display = 'block';
+                return;
+            } else {
+                validationMessage.style.display = 'none';
+            }
+
+            // Bootstrap form doğrulama
+            const form = event.currentTarget;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+
+            // Loading spinner göster
+            if (form.checkValidity()) {
+                const submitButton = document.getElementById('submitButton');
+                const submitText = document.getElementById('submitText');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+
+                submitButton.disabled = true;
+                submitText.innerText = 'Kaydediliyor...';
+                loadingSpinner.classList.remove('d-none');
+            }
+        });
+    </script>
+}

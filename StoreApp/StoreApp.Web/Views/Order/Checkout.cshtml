@@ -1,0 +1,178 @@
+﻿@model StoreApp.Web.Models.OrderViewModel
+@using StoreApp.Web.Models
+@using StoreApp.Data.Concrete
+@{
+    ViewData["Title"] = "KurnaŞ Sitesi - Ödeme Sayfası";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="site-wrap py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Ödeme Sayfası</h2>
+        <div class="row">
+            <!-- Sipariş Özeti -->
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Sipariş Özeti</h4>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Cart?.CartItems != null && Model.Cart.CartItems.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var item in Model.Cart.CartItems)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <img src="@item.Product?.ImageUrl" alt="@item.Product?.Name" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                            <div>
+                                                <h6 class="mb-1">@item.Product?.Name</h6>
+                                                <small class="text-muted">Adet: @item.Quantity</small>
+                                            </div>
+                                        </div>
+                                        <span class="fw-bold">@((item.Product?.Price * item.Quantity ?? 0).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR")))</span>
+                                    </li>
+                                }
+                            </ul>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Toplam:</span>
+                                <span>@Model.Cart?.CartItems.Sum(item => item.Product?.Price * item.Quantity ?? 0).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</span>
+                            </div>
+                                               }
+                        
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary">Sepete Dön</a>
+                </div>    
+            </div>
+
+            <!-- Kullanıcı Bilgileri Formu -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Teslimat ve Ödeme Bilgileri</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Checkout" asp-controller="Order" method="post" id="checkout-form">
+                            <!-- Hata mesajları için alan -->
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3" role="alert" style="display: @(ViewData.ModelState.ErrorCount > 0 ? "block" : "none");"></div>
+
+                            <!-- Teslimat Bilgileri -->
+                            <h5 class="mb-3">Teslimat Bilgileri</h5>
+                            <div class="mb-3">
+                                <label for="Name" class="form-label">Ad Soyad</label>
+                                <input asp-for="Name" class="form-control" placeholder="Adınızı ve soyadınızı girin" required>
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Email" class="form-label">E-posta</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="ornek@ornek.com" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Phone" class="form-label">Telefon</label>
+                                <input asp-for="Phone" type="tel" class="form-control" placeholder="05XX XXX XX XX" required>
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="City" class="form-label">Şehir</label>
+                                <input asp-for="City" class="form-control" placeholder="Şehrinizi girin" required>
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="AddressLine" class="form-label">Adres</label>
+                                <textarea asp-for="AddressLine" class="form-control" rows="4" placeholder="Tam adresinizi girin" required></textarea>
+                                <span asp-validation-for="AddressLine" class="text-danger"></span>
+                            </div>
+
+                            <!-- Ödeme Bilgileri -->
+                            <h5 class="mb-3 mt-4">Ödeme Bilgileri</h5>
+                            <div class="mb-3">
+                                <label for="CartName" class="form-label">Kart Üzerindeki İsim</label>
+                                <input asp-for="CartName" class="form-control" placeholder="Kart üzerindeki adı girin" required>
+                                <span asp-validation-for="CartName" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="CartNumber" class="form-label">Kart Numarası</label>
+                                <input asp-for="CartNumber" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                                <span asp-validation-for="CartNumber" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="ExpirationMonth" class="form-label">Son Kullanma Ayı</label>
+                                    <input asp-for="ExpirationMonth" class="form-control" placeholder="MM" maxlength="2" required>
+                                    <span asp-validation-for="ExpirationMonth" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ExpirationYear" class="form-label">Son Kullanma Yılı</label>
+                                    <input asp-for="ExpirationYear" class="form-control" placeholder="YYYY" maxlength="4" required>
+                                    <span asp-validation-for="ExpirationYear" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Cvc" class="form-label">CVC Kodu</label>
+                                <input asp-for="Cvc" class="form-control" placeholder="XXX" maxlength="3" required>
+                                <span asp-validation-for="Cvc" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-3">Siparişi Tamamla</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 12px;
+        }
+
+        .card-header {
+            padding: 15px;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 15px 0;
+            background-color: transparent;
+        }
+
+        .form-control, .form-control:focus {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-outline-secondary {
+            border-radius: 8px;
+        }
+
+        .text-danger, .alert-danger {
+            font-size: 0.85rem;
+        }
+
+        .alert-warning {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/checkout-form.js"></script>
+}

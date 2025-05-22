@@ -1,0 +1,101 @@
+﻿@model StoreApp.Web.DTO.ProductDTO
+
+<h2>Ürünü Güncelle</h2>
+
+<form asp-action="EditProduct" asp-controller="Admin" method="post" enctype="multipart/form-data" id="editProductForm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Ürün Adı</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">Fiyat</label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Açıklama</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mevcut Fotoğraf</label>
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div>
+                <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 200px;" />
+            </div>
+        }
+        else
+        {
+            <p>Resim yok</p>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ImageFile" class="form-label">Yeni Fotoğraf Yükle (İsteğe Bağlı)</label>
+        <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" id="imageFile" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+        <img id="imagePreview" src="#" alt="Önizleme" style="display: none; max-width: 200px; margin-top: 10px;" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Kategoriler</label>
+        <div class="form-check">
+            @foreach (var category in Model.AvailableCategories)
+            {
+                <div>
+                    <input type="checkbox" 
+                           name="CategoryIds" 
+                           value="@category.Id" 
+                           class="form-check-input category-checkbox" 
+                           id="category-@category.Id" 
+                           @(Model.CategoryIds.Contains(category.Id) ? "checked" : "") />
+                    <label class="form-check-label" for="category-@category.Id">
+                        @category.Name (ID: @category.Id)
+                    </label>
+                </div>
+            }
+        </div>
+        <span id="category-validation" class="text-danger" style="display: none;">En az bir kategori seçmelisiniz.</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncellemeyi Kaydet</button>
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-secondary">İptal</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('imageFile').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('editProductForm').addEventListener('submit', function (event) {
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            const validationMessage = document.getElementById('category-validation');
+
+            if (!anyChecked) {
+                event.preventDefault();
+                validationMessage.style.display = 'block';
+            } else {
+                validationMessage.style.display = 'none';
+            }
+        });
+    </script>
+}

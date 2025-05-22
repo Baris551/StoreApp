@@ -1,0 +1,93 @@
+﻿@page
+@model StoreApp.Web.Pages.CartModel
+
+@{
+    ViewData["Title"] = "Sepetim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Sepetim</h1>
+
+    @if (Model.Cart?.CartItems?.Any() == true)
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Ürün Resmi</th>
+                    <th>Ürün Adı</th>
+                    <th>Fiyat</th>
+                    <th>Adet</th>
+                    <th>Toplam</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Cart.CartItems)
+                {
+                    <tr>
+                        <td>
+                            @if (item.Product != null)
+                            {
+                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name" style="width: 100px; height: auto;" />
+                            }
+                            else
+                            {
+                                <span>Resim Bilgisi Yok</span>
+                            }
+                        <td>@item.Product?.Name</td>
+                        <td>
+                            @if (item.Product != null)
+                            {
+                                @(item.Product.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR")))
+                            }
+                            else
+                            {
+                                <span>Fiyat Bilgisi Yok</span>
+                            }
+                        </td>
+                        <td>@item.Quantity</td>
+                        <td>
+                            @if (item.Product != null)
+                            {
+                                var total = item.Product.Price * item.Quantity;
+                                @(total.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR")))
+                            }
+                            else
+                            {
+                                <span>Toplam Bilgisi Yok</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Product != null)
+                            {
+                                <form asp-page-handler="Remove" asp-route-productId="@item.Product.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Kaldır</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Toplam:</strong></td>
+                    <td colspan="2">
+                        @(Model.Cart.CalculateTotal().ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR")))
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="text-center">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Alışverişe Devam Et</a>
+            <a asp-controller="Order" asp-action="Checkout" class="btn btn-success">Ödemeye Geç</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            Sepetinizde ürün bulunmamaktadır.
+        </div>
+    }
+</div>

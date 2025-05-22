@@ -1,0 +1,117 @@
+﻿@model StoreApp.Web.DTO.LoginDTO
+
+<div class="login-container">
+    <h2>Giriş Yap</h2>
+    <form asp-action="Login" asp-controller="Users" method="post">
+        <!-- Bu sayede, form gönderildiğinde ReturnUrl değeri controller’a ulaşır -->
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <br>
+        <!-- Kullanıcı adı alanı -->
+        <div class="input-group">
+            <input asp-for="UserName" placeholder=" " required>
+            <label asp-for="UserName">UserName</label>
+        </div>
+        
+        <!-- Şifre alanı -->
+        <div class="input-group">
+            <input asp-for="Password" type="password" placeholder=" " required>
+            <label asp-for="Password">Şifre</label>
+        </div>
+        <!-- Giriş yap butonu -->
+        <button type="submit">Giriş Yap</button>
+    </form>
+    <a href="#" class="forgot-password">Şifremi Unuttum?</a>
+</div>
+
+<style>
+.login-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    border: 1px solid #e0e0e0;
+}
+.login-container h2 {
+    color: #000;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.login-container .input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.login-container input:focus {
+    border-color: #007bff;
+}
+
+.login-container label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.login-container input:focus + label,
+.login-container input:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #007bff;
+    background: #fff;
+    padding: 0 5px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+    background: #0056b3;
+}
+
+.login-container .forgot-password {
+    margin-top: 15px;
+    display: block;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.login-container .forgot-password:hover {
+    text-decoration: underline;
+}
+</style>

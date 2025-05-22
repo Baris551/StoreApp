@@ -1,0 +1,194 @@
+﻿@model StoreApp.Web.DTO.RegisterDTO
+@{
+    ViewData["Title"] = "KurnaŞ Sitesi - Kayıt Ol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="site-wrap py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Kayıt Ol</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Register" asp-controller="Users" method="post" id="register-form">
+                            @Html.AntiForgeryToken()
+                            <!-- Kullanıcı Adı -->
+                            <div class="mb-3">
+                                <label asp-for="UserName" class="form-label">Kullanıcı Adı</label>
+                                <input asp-for="UserName" class="form-control" placeholder="Kullanıcı adınızı girin" required>
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <!-- E-posta -->
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">E-posta</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="ornek@ornek.com" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <!-- Ad Soyad -->
+                            <div class="mb-3">
+                                <label asp-for="FullName" class="form-label">Ad Soyad</label>
+                                <input asp-for="FullName" class="form-control" placeholder="Adınızı ve soyadınızı girin" required>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                            <!-- Telefon Numarası -->
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Telefon Numarası</label>
+                                <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="05XX XXX XX XX" required>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <!-- Adres -->
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">Adres</label>
+                                <textarea asp-for="Address" class="form-control" rows="3" placeholder="Tam adresinizi girin" required></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                            <!-- Şifre -->
+                            <div class="mb-3">
+                                <label asp-for="Password" class="form-label">Şifre</label>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Şifrenizi girin" required>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label">Yeni Şifre (Tekrar)</label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Yeni şifrenizi tekrar girin" required>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <!-- Hata Mesajları -->
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <p>@error.ErrorMessage</p>
+                                    }
+                                </div>
+                            }
+                            <!-- Kayıt Ol Butonu -->
+                            <button type="submit" class="btn btn-primary w-100 py-3">Kayıt Ol</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <p>Zaten hesabınız var mı? <a asp-action="Login" asp-controller="Users" class="text-primary">Giriş Yap</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Özel CSS -->
+<style>
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .form-control, .form-control:focus {
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .text-danger {
+        font-size: 0.85rem;
+    }
+
+    .alert-danger {
+        border-radius: 8px;
+    }
+
+    @* @media (max-width: 576px) {
+        .card {
+            margin: 0 10px;
+        } *@
+    }
+</style>
+
+<!-- Gerekli Kütüphaneler -->
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.3.1/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#register-form").validate({
+                rules: {
+                    UserName: {
+                        required: true,
+                        minlength: 3
+                    },
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    FullName: {
+                        required: true,
+                        minlength: 3
+                    },
+                    PhoneNumber: {
+                        required: true,
+                        minlength: 10
+                    },
+                    Address: {
+                        required: true,
+                        minlength: 10
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6
+                    }
+                },
+                messages: {
+                    UserName: {
+                        required: "Kullanıcı adı zorunludur.",
+                        minlength: "Kullanıcı adı en az 3 karakter olmalıdır."
+                    },
+                    Email: {
+                        required: "E-posta zorunludur.",
+                        email: "Geçerli bir e-posta adresi girin."
+                    },
+                    FullName: {
+                        required: "Ad soyad zorunludur.",
+                        minlength: "Ad soyad en az 3 karakter olmalıdır."
+                    },
+                    PhoneNumber: {
+                        required: "Telefon numarası zorunludur.",
+                        minlength: "Telefon numarası en az 10 karakter olmalıdır."
+                    },
+                    Address: {
+                        required: "Adres zorunludur.",
+                        minlength: "Adres en az 10 karakter olmalıdır."
+                    },
+                    Password: {
+                        required: "Şifre zorunludur.",
+                        minlength: "Şifre en az 6 karakter olmalıdır."
+                    }
+                },
+                errorElement: "span",
+                errorClass: "text-danger",
+                highlight: function (element) {
+                    $(element).addClass("border-danger");
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass("border-danger");
+                }
+            });
+        });
+    </script>
+}

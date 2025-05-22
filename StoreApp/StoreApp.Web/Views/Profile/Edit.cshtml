@@ -1,0 +1,163 @@
+﻿@model StoreApp.Web.DTO.ProfileDTO
+@{
+    ViewData["Title"] = "KurnaŞ Sitesi - Profil Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="site-wrap py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Profil Bilgilerini Düzenle</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Edit" asp-controller="Profile" method="post" id="edit-form">
+                            @Html.AntiForgeryToken()
+                            <!-- Kullanıcı Adı (Salt Okunur) -->
+                            <div class="mb-3">
+                                <label asp-for="UserName" class="form-label">Kullanıcı Adı</label>
+                                <input asp-for="UserName" class="form-control" readonly>
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <!-- E-posta -->
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">E-posta</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="ornek@ornek.com" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <!-- Ad Soyad -->
+                            <div class="mb-3">
+                                <label asp-for="FullName" class="form-label">Ad Soyad</label>
+                                <input asp-for="FullName" class="form-control" placeholder="Adınızı ve soyadınızı girin">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                            <!-- Telefon Numarası -->
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Telefon Numarası</label>
+                                <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="05XX XXX XX XX">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <!-- Adres -->
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">Adres</label>
+                                <textarea asp-for="Address" class="form-control" rows="3" placeholder="Tam adresinizi girin"></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                            <!-- Hata Mesajları -->
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <p>@error.ErrorMessage</p>
+                                    }
+                                </div>
+                            }
+                            <!-- Kaydet Butonu -->
+                            <button type="submit" class="btn btn-primary w-100 py-3">Bilgileri Kaydet</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a asp-action="Index" class="text-primary">Geri Dön</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Özel CSS -->
+<style>
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .form-control, .form-control:focus {
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .text-danger {
+        font-size: 0.85rem;
+    }
+
+    .alert-danger {
+        border-radius: 8px;
+    }
+@* 
+    @media (max-width: 576px) {
+        .card {
+            margin: 0 10px;
+        } *@
+    }
+</style>
+
+<!-- Gerekli Kütüphaneler -->
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.3.1/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#edit-form").validate({
+                rules: {
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    FullName: {
+                        minlength: 3
+                    },
+                    PhoneNumber: {
+                        pattern: /^05\d{2}\s\d{3}\s\d{2}\s\d{2}$/,
+                        minlength: 14
+                    },
+                    Address: {
+                        minlength: 10
+                    }
+                },
+                messages: {
+                    Email: {
+                        required: "E-posta zorunludur.",
+                        email: "Geçerli bir e-posta adresi girin."
+                    },
+                    FullName: {
+                        minlength: "Ad soyad en az 3 karakter olmalıdır."
+                    },
+                    PhoneNumber: {
+                        pattern: "Telefon numarası 05XX XXX XX XX formatında olmalıdır.",
+                        minlength: "Telefon numarası tam olarak 05XX XXX XX XX formatında olmalıdır."
+                    },
+                    Address: {
+                        minlength: "Adres en az 10 karakter olmalıdır."
+                    }
+                },
+                errorElement: "span",
+                errorClass: "text-danger",
+                highlight: function (element) {
+                    $(element).addClass("border-danger");
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass("border-danger");
+                }
+            });
+        });
+    </script>
+}

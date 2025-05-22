@@ -1,0 +1,493 @@
+﻿@model IEnumerable<StoreApp.Web.Models.ProductViewModel>
+@using System.Globalization
+@{
+    ViewData["Title"] = "KurnaŞ Sitesi - Toptan Kumaş Alışverişi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <!-- Tam Ekran Slider -->
+    <section class="fullscreen-slider">
+        <div class="slider">
+            <div class="slide active">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop" alt="Pamuk Kumaş" class="slide-image">
+                <div class="slide-content">
+                    <h1 class="animate__animated animate__fadeInDown">Toptan Pamuk Kumaşlar</h1>
+                    <p class="lead animate__animated animate__fadeInRight animate__delay-1s">Yumuşak ve dayanıklı, toptan fiyatlarla!</p>
+                    <a href="#shop" class="btn btn-primary btn-lg rounded-pill px-5 py-3 animate__animated animate__fadeInUp animate__delay-2s">Keşfet</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=1920&auto=format&fit=crop" alt="İpek Kumaş" class="slide-image">
+                <div class="slide-content">
+                    <h1 class="animate__animated animate__fadeInDown">Lüks İpek Kumaşlar</h1>
+                    <p class="lead animate__animated animate__fadeInRight animate__delay-1s">Parlak ve ipeksi dokunuş, toptan indirimlerle!</p>
+                    <a href="#shop" class="btn btn-primary btn-lg rounded-pill px-5 py-3 animate__animated animate__fadeInUp animate__delay-2s">Keşfet</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="/images/pamuk-kumas.jpg" alt="Keten Kumaş" class="slide-image">
+                <div class="slide-content">
+                    <h1 class="animate__animated animate__fadeInDown">Doğal Keten Kumaşlar</h1>
+                    <p class="lead animate__animated animate__fadeInRight animate__delay-1s">Hafif ve dayanıklı, toptan fiyatlarla!</p>
+                    <a href="#shop" class="btn btn-primary btn-lg rounded-pill px-5 py-3 animate__animated animate__fadeInUp animate__delay-2s">Keşfet</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop" alt="Yün Kumaş" class="slide-image">
+                <div class="slide-content">
+                    <h1 class="animate__animated animate__fadeInDown">Sıcak Yün Kumaşlar</h1>
+                    <p class="lead animate__animated animate__fadeInRight animate__delay-1s">Kışlık projeler için ideal, toptan avantajlarla!</p>
+                    <a href="#shop" class="btn btn-primary btn-lg rounded-pill px-5 py-3 animate__animated animate__fadeInUp animate__delay-2s">Keşfet</a>
+                </div>
+            </div>
+        </div>
+        <div class="slider-controls">
+            <span class="control-prev">&larr;</span>
+            <span class="control-next">&rarr;</span>
+        </div>
+    </section>
+</main>
+
+<!-- Kategoriler Bölümü -->
+<section class="categories-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center mb-5 animate__animated animate__fadeIn">
+                <h2>Kumaş Kategorilerimiz</h2>
+                <p class="text-muted">Toptan kumaş ihtiyaçlarınız için geniş bir yelpazede kategoriler sunuyoruz.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="100">
+                <a href="#" class="category-link">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop
+" alt="Pamuk Kumaşlar" class="img-fluid rounded-circle mb-3">
+                    <h5>Pamuk Kumaşlar</h5>
+                </a>
+            </div>
+            <div class="col-md-3 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="200">
+                <a href="#" class="category-link">
+                    <img src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=1920&auto=format&fit=crop
+" alt="İpek Kumaşlar" class="img-fluid rounded-circle mb-3">
+                    <h5>İpek Kumaşlar</h5>
+                </a>
+            </div>
+            <div class="col-md-3 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="300">
+                <a href="#" class="category-link">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop
+" alt="Keten Kumaşlar" class="img-fluid rounded-circle mb-3">
+                    <h5>Keten Kumaşlar</h5>
+                </a>
+            </div>
+            <div class="col-md-3 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="400">
+                <a href="#" class="category-link">
+                    <img src="/images/pamuk-kumas.jpg" alt="Yün Kumaşlar" class="img-fluid rounded-circle mb-3">
+                    <h5>Yün Kumaşlar</h5>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Avantajlar Bölümü -->
+<section class="advantages-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="100">
+                <div class="advantage-item">
+                    <span class="fas fa-truck fa-2x mb-3"></span>
+                    <h4 class="text-uppercase">Hızlı Kargo</h4>
+                    <p class="text-muted">Toptan siparişlerinizi 3 iş günü içinde teslim ediyoruz.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="200">
+                <div class="advantage-item">
+                    <span class="fas fa-sync-alt fa-2x mb-3"></span>
+                    <h4 class="text-uppercase">Kolay İade</h4>
+                    <p class="text-muted">14 gün içinde koşulsuz iade hakkı ile güvenle alışveriş yapın.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4 animate__animated animate__fadeIn" data-aos-delay="300">
+                <div class="advantage-item">
+                    <span class="fas fa-headset fa-2x mb-3"></span>
+                    <h4 class="text-uppercase">Müşteri Desteği</h4>
+                    <p class="text-muted">7/24 destek ekibimizle her zaman yanınızdayız.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Öne Çıkan Ürünler -->
+<section class="featured-products-section py-5" id="shop">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center mb-5 animate__animated animate__fadeIn">
+                <h2>Öne Çıkan Kumaşlar</h2>
+                <p class="text-muted">En popüler kumaşlarımızla tanışın, toptan fiyatlarla hemen satın alın!</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="featured-products-carousel owl-carousel">
+                    @foreach (var product in Model)
+                    {
+                        <div class="item">
+                            <div class="product-card text-center animate__animated animate__fadeIn">
+                                <div class="product-image position-relative">
+                                    <img src="@(product.ImageUrl ?? "/images/placeholder.jpg")" alt="@product.Name" class="img-fluid">
+                                    <span class="badge bg-primary text-white position-absolute top-0 start-0 m-2">Toptan Fiyat</span>
+                                </div>
+                                <div class="product-details p-4">
+                                    <h5 class="mb-2"><a asp-action="Details" asp-controller="Product" asp-route-id="@product.Id">@product.Name</a></h5>
+                                    <p class="text-muted mb-3" style="min-height: 60px;">@(product.Description?.Length > 80 ? product.Description.Substring(0, 80) + "..." : product.Description ?? "Açıklama yok")</p>
+                                    <p class="text-primary font-weight-bold mb-3">₺@product.Price.ToString("#,##0", CultureInfo.GetCultureInfo("tr-TR"))</p>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Details" asp-controller="Product" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm px-3">Detaylar</a>
+                                        <form asp-page="/Cart" asp-route-id="@product.Id" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-primary btn-sm px-3">Sepete Ekle</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hakkımızda Bölümü -->
+<section class="about-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 animate__animated animate__fadeIn">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop" alt="Hakkımızda" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6 animate__animated animate__fadeIn" data-aos-delay="200">
+                <h2 class="mb-4">Neden KurnaŞ?</h2>
+                <p class="text-muted">KurnaŞ olarak, toptan kumaş sektöründe 20 yılı aşkın deneyimimizle en kaliteli ürünleri en uygun fiyatlarla sunuyoruz. Geniş ürün yelpazemiz ve hızlı teslimat avantajlarımızla, müşterilerimizin her zaman yanındayız.</p>
+                <a href="#" class="btn btn-primary btn-lg rounded-pill px-5 py-3 mt-3">Daha Fazla Bilgi</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SVG Dalga Filtresi (Kumaş Dalgalanma Efekti için) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+    <filter id="wavy-filter">
+        <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="3" result="turbulence"/>
+        <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="25" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+</svg>
+
+<!-- Özel CSS -->
+<style>
+    /* Genel Stil ve Font */
+    body {
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    h1, h2, h3, h4, h5 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+    }
+
+    /* Tam Ekran Slider */
+    .fullscreen-slider {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+    .slider {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    .slide {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none;
+    }
+    .slide.active {
+        display: block;
+    }
+    .slide-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        animation: wave 6s infinite linear;
+        filter: url('#wavy-filter');
+    }
+    .slide-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        z-index: 10;
+    }
+    .slide-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+    }
+    .slide-content .lead {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .slide-content .btn {
+        background-color: #8b5e34;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .slide-content .btn:hover {
+        background-color: #6b4e31;
+        transform: scale(1.05);
+    }
+    
+    .slider-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 20;
+    }
+    .slider-controls span {
+        font-size: 2rem;
+        color: white;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        transition: color 0.3s ease;
+    }
+    .slider-controls span:hover {
+        color: #e8b4b8;
+    }
+
+    /* Kategoriler Bölümü */
+    .categories-section {
+        background-color: #fff;
+    }
+    .categories-section h2 {
+        color: #8b5e34;
+        font-size: 2.5rem;
+    }
+    .category-link img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid #e8b4b8;
+    }
+    .category-link img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .category-link h5 {
+        color: #333;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+    }
+    .category-link h5:hover {
+        color: #8b5e34;
+    }
+
+    /* Avantajlar Bölümü */
+    .advantages-section {
+        background: linear-gradient(to right, #e8b4b8, #ffffff);
+    }
+    .advantage-item {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        transition: transform 0.3s ease;
+    }
+    .advantage-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .advantage-item span {
+        color: #8b5e34;
+    }
+    .advantage-item h4 {
+        color: #8b5e34;
+        font-size: 1.5rem;
+    }
+
+    /* Öne Çıkan Ürünler */
+    .featured-products-section {
+        background-color: #f8f5f2;
+    }
+    .featured-products-section h2 {
+        color: #8b5e34;
+        font-size: 2.5rem;
+    }
+    .product-card {
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e8b4b8;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    .product-image img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+    .product-details h5 a {
+        color: #333;
+        text-decoration: none;
+        font-family: 'Playfair Display', serif;
+        transition: color 0.3s ease;
+    }
+    .product-details h5 a:hover {
+        color: #8b5e34;
+    }
+    .product-details .text-primary {
+        color: #8b5e34 !important;
+    }
+    .badge {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        background-color: #a9c5ba !important;
+    }
+    .btn-primary {
+        background-color: #8b5e34;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #6b4e31;
+    }
+    .btn-outline-primary {
+        border-color: #8b5e34;
+        color: #8b5e34;
+    }
+    .btn-outline-primary:hover {
+        background-color: #8b5e34;
+        color: #fff;
+    }
+
+    /* Hakkımızda Bölümü */
+    .about-section {
+        background-color: #fff;
+    }
+    .about-section h2 {
+        color: #8b5e34;
+        font-size: 2.5rem;
+    }
+    .about-section img {
+        border: 5px solid #e8b4b8;
+    }
+
+    /* Owl Carousel Dots */
+    .owl-dots {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .owl-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background-color: #d3d3d3 !important;
+        border-radius: 50%;
+        margin: 0 5px;
+        transition: background-color 0.3s ease;
+    }
+    .owl-dot.active {
+        background-color: #8b5e34 !important;
+    }
+    .owl-dot:hover {
+        background-color: #6b4e31 !important;
+    }
+</style>
+
+<!-- Gerekli Kütüphaneler -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // Slider Kontrolleri
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+        }
+
+        document.querySelector('.control-next').addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        });
+
+        document.querySelector('.control-prev').addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        });
+
+        // Otomatik geçiş (isteğe bağlı)
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }, 5000);
+
+        // Featured Products Carousel
+        var productCarousel = $(".featured-products-carousel");
+        productCarousel.owlCarousel({
+            loop: false,
+            margin: 20,
+            nav: false,
+            dots: true,
+            items: 4,
+            slideBy: 1,
+            responsive: {
+                0: { items: 1, slideBy: 1 },
+                600: { items: 2, slideBy: 1 },
+                1000: { items: 4, slideBy: 1 }
+            }
+        });
+
+        productCarousel.on('changed.owl.carousel', function(event) {
+            var current = event.item.index;
+            $('.owl-dot').removeClass('active');
+            $('.owl-dot').eq(current).addClass('active');
+        });
+
+        $('.owl-dot').click(function() {
+            var index = $(this).index();
+            productCarousel.trigger('to.owl.carousel', [index, 300]);
+        });
+    });
+</script>

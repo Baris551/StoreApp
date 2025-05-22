@@ -1,0 +1,101 @@
+﻿@model IEnumerable<StoreApp.Data.Concrete.Order>
+@using Microsoft.AspNetCore.Identity
+@using StoreApp.Data.Concrete
+@inject UserManager<AppUser> UserManager
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">Siparişlerim</h2>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var order in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Sipariş No: #@order.Id - @order.OrderDate.ToString("dd.MM.yyyy HH:mm")</h5>
+                            @if (User.IsInRole("Admin") && order.UserId != null)
+                            {
+                                var user = await UserManager.FindByIdAsync(order.UserId.ToString());
+                                <small class="text-warning">Kullanıcı: @user?.Email (ID: @order.UserId)</small>
+                            }
+                            @if (order.UserId == null && User.IsInRole("Admin"))
+                            {
+                                <small class="text-warning">Eski sipariş (Kullanıcı bağlantısı yok)</small>
+                            }
+                            @if (!string.IsNullOrEmpty(order.OrderStatus))
+                            {
+                                <small class="badge @(order.OrderStatus == "Completed" ? "bg-success" : order.OrderStatus == "Pending" ? "bg-warning" : "bg-danger") ms-2">
+                                    @order.OrderStatus
+                                </small>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Toplam Tutar:</strong> @order.TotalAmount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</p>
+                            <h6>Sipariş Detayları:</h6>
+                            @if (order.OrderItems != null && order.OrderItems.Any())
+                            {
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Ürün</th>
+                                            <th>Fiyat</th>
+                                            <th>Miktar</th>
+                                            <th>Toplam</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <tr>
+                                                <td>@item.ProductName</td>
+                                                <td>@item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</td>
+                                                <td>@item.Quantity</td>
+                                                <td>@item.TotalPrice.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Sipariş kalemi bulunamadı.</p>
+                            }
+                            <a asp-controller="Order" asp-action="CheckoutCompleted" asp-route-orderId="@order.Id" class="btn btn-primary btn-sm">Detayları Görüntüle</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            Henüz siparişiniz bulunmamaktadır.
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Alışverişe Başla</a>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .card-header {
+            padding: 10px 15px;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .table-sm th, .table-sm td {
+            font-size: 0.9rem;
+            padding: 5px;
+        }
+        .text-warning, .badge {
+            font-size: 0.8rem;
+        }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+        }
+    </style>
+}

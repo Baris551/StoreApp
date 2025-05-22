@@ -1,0 +1,73 @@
+﻿@model List<StoreApp.Web.DTO.ProductDTO>
+@using System.Globalization
+
+<h2>Ürün Listesi</h2>
+
+<p>
+    <a asp-action="AddProduct" class="btn btn-primary">Yeni Ürün Ekle</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ürün Adı</th>
+            <th>Fiyat</th>
+            <th>Açıklama</th>
+            <th>Kategoriler</th>
+            <th>Fotoğraf</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price.ToString("C", CultureInfo.GetCultureInfo("tr-TR"))</td>
+                <td>@product.Description</td>
+                <td>
+                    @if (product.CategoryIds != null && product.CategoryIds.Any())
+                    {
+                        var categoryNames = product.AvailableCategories
+                            .Where(c => product.CategoryIds.Contains(c.Id))
+                            .Select(c => c.Name);
+                        @string.Join(", ", categoryNames)
+                    }
+                    else
+                    {
+                        <span>Hiçbir kategori seçilmedi</span>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img src="@product.ImageUrl" alt="@product.Name" style="max-width: 100px;" />
+                    }
+                    else
+                    {
+                        <span>Resim yok</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="EditProduct" asp-route-id="@product.Id" class="btn btn-warning btn-sm">Güncelle</a>
+                    <a asp-action="DeleteProduct" asp-route-id="@product.Id" class="btn btn-danger btn-sm" 
+                       onclick="return confirm('Bu ürünü silmek istediğinizden emin misiniz?')">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <style>
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+        }
+        img {
+            border-radius: 5px;
+        }
+    </style>
+}

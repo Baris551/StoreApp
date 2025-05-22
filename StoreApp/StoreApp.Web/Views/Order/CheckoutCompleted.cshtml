@@ -1,0 +1,89 @@
+﻿@model StoreApp.Data.Concrete.Order
+@using System.Globalization
+
+@if (Model == null)
+{
+    <div class="container py-5">
+        <div class="alert alert-danger text-center">
+            Sipariş bilgileri yüklenemedi.
+            <a asp-controller="Orders" asp-action="Index" class="btn btn-primary mt-3">Siparişlerime Dön</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Siparişiniz Alındı</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Sipariş No: #@Model.Id - @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Toplam Tutar:</strong> ₺@Model.TotalAmount.ToString("#,##0", CultureInfo.GetCultureInfo("tr-TR"))</p>
+                        <h6>Sipariş Detayları:</h6>
+                        @if (Model.OrderItems != null && Model.OrderItems.Any())
+                        {
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün</th>
+                                        <th>Fiyat</th>
+                                        <th>Miktar</th>
+                                        <th>Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td>@(item.ProductName ?? "Bilinmeyen Ürün")</td>
+                                            <td>₺@item.Price.ToString("#,##0", CultureInfo.GetCultureInfo("tr-TR"))</td>
+                                            <td>@item.Quantity</td>
+                                            <td>₺@item.TotalPrice.ToString("#,##0", CultureInfo.GetCultureInfo("tr-TR"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Sipariş kalemi bulunamadı.</p>
+                        }
+                        <h6>Teslimat Bilgileri:</h6>
+                        <p><strong>Ad Soyad:</strong> @Model.Name</p>
+                        <p><strong>E-posta:</strong> @Model.Email</p>
+                        <p><strong>Telefon:</strong> @Model.Phone</p>
+                        <p><strong>Şehir:</strong> @Model.City</p>
+                        <p><strong>Adres:</strong> @Model.AddressLine</p>
+                        <div class="text-center mt-4">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Ana Sayfaya Dön</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 8px;
+        }
+        .card-header {
+            padding: 10px 15px;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .table-sm th, .table-sm td {
+            font-size: 0.9rem;
+            padding: 5px;
+        }
+        .btn-primary {
+            border-radius: 5px;
+        }
+    </style>
+}

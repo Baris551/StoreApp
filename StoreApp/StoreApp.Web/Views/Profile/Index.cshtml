@@ -1,0 +1,49 @@
+﻿@model StoreApp.Web.DTO.ProfileDTO
+
+<div class="profile-container">
+    <h2>Profilim</h2>
+    <div class="profile-info">
+        <p><strong>Kullanıcı Adı:</strong> @Model.UserName</p>
+        <p><strong>Ad Soyad:</strong> @(string.IsNullOrEmpty(Model.FullName) ? "Belirtilmemiş" : Model.FullName)</p>
+        <p><strong>E-posta:</strong> @Model.Email</p>
+        <p>
+            <strong>Telefon:</strong> 
+            @(string.IsNullOrEmpty(Model.PhoneNumber) ? "Telefon numarası belirtilmemiş" : Model.PhoneNumber)
+        </p>
+        <p><strong>Adres:</strong> @(string.IsNullOrEmpty(Model.Address) ? "Belirtilmemiş" : Model.Address)</p>
+        <p><strong>Kayıt Tarihi:</strong> @Model.RegisterDate.ToShortDateString()</p>
+    </div>
+    <div class="profile-actions">
+        <a asp-action="Edit" asp-controller="Profile" class="btn btn-primary">Bilgileri Güncelle</a>
+        <a asp-action="ChangePassword" asp-controller="Profile" class="btn btn-secondary">Şifre Değiştir</a>
+    </div>
+</div>
+
+<style>
+.profile-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.profile-container h2 {
+    margin-bottom: 20px;
+}
+
+.profile-info p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.profile-actions {
+    margin-top: 20px;
+}
+
+.profile-actions .btn {
+    margin-right: 10px;
+}
+</style>

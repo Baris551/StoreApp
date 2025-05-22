@@ -1,0 +1,73 @@
+﻿@model StoreApp.Web.Models.ErrorViewModel
+
+@{
+    ViewData["Title"] = @Model.Message;
+}
+
+<div class="error-container">
+    <!-- Durum kodunu büyük bir şekilde gösteriyoruz -->
+    <h1>@Model.StatusCode</h1>
+    <!-- Hata mesajını gösteriyoruz -->
+    <h2>@Model.Message</h2>
+    <!-- Kullanıcıyı ana sayfaya yönlendiren bir buton -->
+    <p>Üzgünüz, aradığınız sayfayı bulamadık. Ana sayfaya dönmek ister misiniz?</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Ana Sayfaya Dön</a>
+</div>
+
+<style>
+/* Error container’ın stilini ayarlıyoruz */
+.error-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    border: 1px solid #e0e0e0;
+}
+
+/* Durum kodu için büyük bir başlık stilini ayarlıyoruz */
+.error-container h1 {
+    color: #dc3545;
+    font-size: 72px;
+    margin-bottom: 10px;
+}
+
+/* Hata mesajı için başlık stilini ayarlıyoruz */
+.error-container h2 {
+    color: #000;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Paragraf stilini ayarlıyoruz */
+.error-container p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Buton stilini ayarlıyoruz */
+.error-container .btn {
+    padding: 12px 20px;
+    background: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+/* Buton üzerine gelindiğinde rengini değiştiriyoruz */
+.error-container .btn:hover {
+    background: #0056b3;
+}
+</style>

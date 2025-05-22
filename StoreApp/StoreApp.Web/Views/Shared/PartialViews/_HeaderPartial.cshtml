@@ -1,0 +1,97 @@
+﻿<header class="site-navbar" role="banner">
+    <div class="site-navbar-top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+                    <form asp-action="Search" asp-controller="Product" class="site-block-top-search" method="get">
+                        <span class="icon icon-search2"></span>
+                        <input type="text" name="query" class="form-control border-0" placeholder="Ara...">
+                    </form>
+                </div>
+
+                <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+                    <div class="site-logo">
+                        <a asp-action="Index" asp-controller="Home" class="js-logo-clone">Shoppers</a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4 order-3 order-md-3 text-right">
+                    <div class="site-top-icons">
+                        <ul class="d-flex align-items-center justify-content-end list-unstyled mb-0">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item dropdown" style="position: relative;">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user-circle me-1"></i> @User.Identity.Name
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="position: absolute; right: 0; min-width: 150px;">
+                                        <li><a asp-action="Index" asp-controller="Profile" class="dropdown-item">Profilim</a></li>
+                                        <li><a asp-action="Index" asp-controller="Orders" class="dropdown-item">Siparişlerim</a></li>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <li><a asp-action="Index" asp-controller="Admin" class="dropdown-item">Ürün Listesi</a></li>
+                                            <li><a asp-action="AddProduct" asp-controller="Admin" class="dropdown-item">Ürün Ekle</a></li>
+                                            <li><a asp-action="ManageUsers" asp-controller="Admin" class="dropdown-item">Kullanıcılar</a></li>
+                                        }
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a asp-action="Logout" asp-controller="Users" class="dropdown-item">Çıkış Yap</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a asp-action="Login" asp-controller="Users" title="Giriş Yap">
+                                        <span class="icon icon-person"></span>
+                                    </a>
+                                </li>
+                            }
+
+                            <li>
+                                <a asp-action="Favorites" asp-controller="User">
+                                    <span class="icon icon-heart-o"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <vc:cart-summery />
+                            </li>
+                            <li class="d-inline-block d-md-none ml-md-0">
+                                <button class="navbar-toggler site-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="icon-menu"></span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="site-navigation text-right text-md-center navbar-expand-md" role="navigation">
+        <div class="container">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="site-menu js-clone-nav d-none d-md-block list-unstyled">
+                    <li class="nav-item active">
+                        <a asp-action="Index" asp-controller="Home" class="nav-link">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Product" class="nav-link">Kategoriler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Contact" class="nav-link">İletişim</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Kütüphane Bağlantıları (Tekrarları Kaldırdık) -->
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- FontAwesome CSS (Tek sürüm kullanıyoruz) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

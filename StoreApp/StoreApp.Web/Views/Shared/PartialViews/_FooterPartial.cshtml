@@ -1,0 +1,104 @@
+﻿<footer>
+<div class="footer-links">
+    <a asp-action="Index" asp-controller="About">Hakkımızda</a>
+    <a asp-action="Index" asp-controller="Privacy">Gizlilik Politikası</a>
+    <a asp-action="Index" asp-controller="Contact">İletişim</a>
+    <a asp-action="Index" asp-controller="Faq">S.S.S.</a>
+</div>
+<div class="social-links mt-2">
+    <a href="#">📘</a>
+    <a href="#">📷</a>
+    <a href="#">🐦</a>
+    <a href="#">📍</a>
+</div>
+<div class="subscribe-form">
+    <input type="email" placeholder="E-posta adresiniz" required>
+    <button>Abone Ol</button>
+</div>
+<p>© 2025 KurnaŞ Sitesi. Tüm hakları saklıdır.</p>
+</footer>
+
+
+
+
+
+
+
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+.card {
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+footer {
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    padding: 20px 0;
+    text-align: center;
+    color: #666;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+}
+footer .footer-links a {
+    color: #a68a64;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 0.9rem;
+}
+footer .footer-links a:hover {
+    text-decoration: underline;
+}
+footer .social-links a {
+    color: #666;
+    font-size: 1.2rem;
+    margin: 0 8px;
+    text-decoration: none;
+}
+footer .social-links a:hover {
+    color: #a68a64;
+}
+footer .subscribe-form {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+footer .subscribe-form input {
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    width: 180px;
+    font-size: 0.9rem;
+}
+footer .subscribe-form button {
+    padding: 8px 16px;
+    background: #a68a64;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+}
+footer .subscribe-form button:hover {
+    background: #8a704f;
+}
+footer p {
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+</style>
+
+    

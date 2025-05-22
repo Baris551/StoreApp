@@ -1,0 +1,440 @@
+ $sceneOffsets: (
+        1: -300%,
+        2: -150%,
+        3: 0,
+        4: 150%,
+        5: 300%
+    );
+
+    @font-face {
+        font-family: 'Cosi';
+        src: url('https://assets.codepen.io/3453673/CosiTimes-Roman.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Cosi';
+        src: url('https://assets.codepen.io/3453673/CosiTimes-Light.woff') format('woff');
+        font-weight: 200;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Matter';
+        src: url('https://assets.codepen.io/3453673/MatterSQTRIAL-Light.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    body {
+        font-family: 'Cosi', serif;
+        font-size: 16px;
+        text-rendering: optimizeLegibility;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .slider {
+        display: flex;
+        height: 100vh;
+    }
+
+    .slider__side {
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .slider__slide {
+        position: absolute;
+        overflow: hidden;
+        height: 100%;
+        width: 101%;
+        visibility: hidden;
+    }
+
+    .slider__slide:nth-child(2n) {
+        visibility: visible;
+    }
+
+    .slider__slide.active {
+        z-index: 2;
+    }
+
+    .slider__slide__img {
+        height: 100%;
+        width: calc(100% + 1px);
+        vertical-align: middle;
+        object-fit: cover;
+        position: absolute;
+        clip-path: inset(0%);
+        top: 0;
+        left: 0;
+    }
+
+    .slider__slide__content {
+        width: 100%;
+        height: 100%;
+        padding: 5rem 4rem;
+        position: relative;
+    }
+
+    .slider__slide__more {
+        backface-visibility: hidden;
+        transform: rotate(-90deg);
+        transform-origin: 0 100%;
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        text-transform: uppercase;
+        color: #fff;
+        font-family: 'Matter', sans-serif;
+    }
+
+    .slider__slide__more + .slider__slide__more {
+        transform: rotate(90deg);
+        transform-origin: 100% 100%;
+        right: 10%;
+        left: auto;
+    }
+
+    .slider__slide__number {
+        font-weight: 200;
+        position: absolute;
+        bottom: 10%;
+        right: 18%;
+        font-size: 5rem;
+        opacity: 0;
+        transform: translateY(5rem);
+        display: flex;
+        color: #fff;
+    }
+
+    @media(min-width: 1200px) {
+        .slider__slide__number {
+            font-size: 9rem;
+        }
+    }
+
+    .slider__slide__number span {
+        display: block;
+        transform: rotateY(90deg);
+    }
+
+    .slider__slide__number span + span {
+        transform: rotateY(-90deg);
+    }
+
+    .slider__slide__scene {
+        font-weight: 200;
+        font-size: 4rem;
+        margin-top: 4%;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        z-index: 10;
+        color: #fff;
+    }
+
+    @media(min-width: 1200px) {
+        .slider__slide__scene {
+            font-size: 6rem;
+        }
+    }
+
+    .slider__slide__scene span {
+        opacity: 0;
+    }
+
+    .slider__slide__scene span:nth-child(1) {
+        transform: translate(-300%, -3rem);
+    }
+
+    .slider__slide__scene span:nth-child(2) {
+        transform: translate(-150%, -3rem);
+    }
+
+    .slider__slide__scene span:nth-child(3) {
+        transform: translate(0, -3rem);
+    }
+
+    .slider__slide__scene span:nth-child(4) {
+        transform: translate(150%, -3rem);
+    }
+
+    .slider__slide__scene span:nth-child(5) {
+        transform: translate(300%, -3rem);
+    }
+
+    .controls {
+        position: fixed;
+        bottom: -7.5rem;
+        left: 50%;
+        z-index: 20;
+        background: #000;
+        height: 10rem;
+        width: 10rem;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .controls__icon {
+        display: inline-block;
+        color: #fff;
+        width: 30%;
+        margin-top: -6.9rem;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .controls__icon svg {
+        height: 1.25rem;
+        width: 1.25rem;
+    }
+
+    .controls__icon + .controls__icon {
+        transform: rotate(180deg);
+        margin-top: -7.1rem;
+    }
+
+    .modal {
+        opacity: 0;
+        z-index: 100;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        backdrop-filter: blur(2px);
+        transition: opacity .3s ease-in-out;
+        background: rgba(0,0,0,0.1);
+        pointer-events: none;
+    }
+
+    .modal.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal__content {
+        background: #fff;
+        position: absolute;
+        height: 60vh;
+        width: 50vw;
+        max-width: 600px;
+        overflow-y: auto;
+        top: 20vh;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 2rem;
+        font-family: 'Matter', sans-serif;
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .modal__content h2 {
+        font-family: 'Cosi', serif;
+    }
+
+    .modal__content a {
+        color: #000;
+    }
+
+    .modal-trigger {
+        position: absolute;
+        z-index: 100;
+        bottom: 0;
+        right: 0;
+        background: #000;
+        color: #fff;
+        text-transform: uppercase;
+        padding: .5rem 1rem;
+        cursor: pointer;
+        border: none;
+        border-radius: none;
+    }
+
+    /* Mevcut Tasarım için CSS */
+    .site-wrap {
+        background-color: #f8f5f2;
+    }
+
+    .categories-section {
+        background-color: #fff;
+    }
+
+    .categories-section h2 {
+        color: #8b5e34;
+        font-size: 2.5rem;
+    }
+
+    .category-link img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid #e8b4b8;
+    }
+
+    .category-link img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-link h5 {
+        color: #333;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+    }
+
+    .category-link h5:hover {
+        color: #8b5e34;
+    }
+
+    .advantages-section {
+        background: linear-gradient(to right, #e8b4b8, #ffffff);
+    }
+
+    .advantage-item {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        transition: transform 0.3s ease;
+    }
+
+    .advantage-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .advantage-item span {
+        color: #8b5e34;
+    }
+
+    .advantage-item h4 {
+        color: #8b5e34;
+        font-size: 1.5rem;
+    }
+
+    .featured-products-section {
+        background-color: #f8f5f2;
+    }
+
+    .featured-products-section h2 {
+        color: #8b5e34;
+        font-size: 2.5rem;
+    }
+
+    .product-card {
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e8b4b8;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .product-details h5 a {
+        color: #333;
+        text-decoration: none;
+        font-family: 'Playfair Display', serif;
+        transition: color 0.3s ease;
+    }
+
+    .product-details h5 a:hover {
+        color: #8b5e34;
+    }
+
+    .product-details .text-primary {
+        color: #8b5e34 !important;
+    }
+
+    .badge {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        background-color: #a9c5ba !important;
+    }
+
+    .btn-primary {
+        background-color: #8b5e34;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #6b4e31;
+    }
+
+    .btn-outline-primary {
+        border-color: #8b5e34;
+        color: #8b5e34;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #8b5e34;
+        color: #fff;
+    }
+
+    .about-section {
+        background-color: #fff;
+    }
+
+    .about-section h2 {
+        color: #8b5e34;
+        font-size: 2.5rem;
+    }
+
+    .about-section img {
+        border: 5px solid #e8b4b8;
+    }
+
+    .owl-dots {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .owl-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background-color: #d3d3d3 !important;
+        border-radius: 50%;
+        margin: 0 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .owl-dot.active {
+        background-color: #8b5e34 !important;
+    }
+
+    .owl-dot:hover {
+        background-color: #6b4e31 !important;
+    }

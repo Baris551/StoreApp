@@ -1,0 +1,79 @@
+﻿@model IEnumerable<CategoryViewModel>
+
+<div class="category-bar-container">
+    <!-- Kategori Butonları -->
+    @{
+        var isAllActive = ViewBag.SelectedCategory == null;
+    }
+    <a asp-controller="Products" asp-action="Index"
+       class="category-btn @(isAllActive ? "active" : "")">
+        <i class="bi bi-grid-fill me-2"></i> Tümü
+    </a>
+
+    @foreach (var category in Model)
+    {
+        var isActive = ViewBag.SelectedCategory == category.Url;
+        var icon = category.Name switch
+        {
+            "Telefon" => "bi-phone-fill",
+            "Elektronik" => "bi-cpu-fill",
+            "Beyaz Eşya" => "bi-house-fill",
+            _ => "bi-tag-fill"
+        };
+        <a asp-controller="Product"
+           asp-action="Index"
+           asp-route-category="@category.Url"
+           class="category-btn @(isActive ? "active" : "")">
+            <i class="bi @icon me-2"></i> @category.Name
+        </a>
+    }
+</div>
+
+<!-- Stil -->
+<style>
+    .category-bar-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: #ffffff;
+        padding: 20px 30px;
+        border-radius: 50px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        margin-bottom: 40px;
+    }
+
+    .category-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: 2px solid #eee;
+        border-radius: 30px;
+        background-color: #f9f9f9;
+        color: #333;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .category-btn:hover {
+        background-color: #e0e0e0;
+        color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .category-btn.active {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff;
+    }
+
+    .category-btn i {
+        font-size: 18px;
+    }
+</style>
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">

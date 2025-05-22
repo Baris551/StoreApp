@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Sık Sorulan Sorular";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4">Sık Sorulan Sorular (S.S.S.)</h1>
+
+    <div class="accordion" id="faqAccordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne">
+                        Siparişim ne zaman kargoya verilir?
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse show" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Siparişleriniz 1-3 iş günü içerisinde kargoya verilmektedir.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo">
+                        Ürünlerim geldiğinde değişim yapabilir miyim?
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseTwo" class="collapse" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Ürün tesliminden itibaren 14 gün içerisinde değişim yapabilirsiniz.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="headingThree">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree">
+                        İade işlemleri nasıl yapılır?
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseThree" class="collapse" data-parent="#faqAccordion">
+                <div class="card-body">
+                    İade etmek istediğiniz ürünü, fatura ile birlikte müşteri hizmetlerimize bildirerek iade sürecini başlatabilirsiniz.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
