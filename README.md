@@ -17,5 +17,5 @@ Bu proje, ASP.NET Core MVC ile geliştirilmiş bir e-ticaret uygulamasıdır. Ku
 - Entity Framework Core
 - MSSQL
 - Bootstrap 5
-- İyzico API (Test & Live)
+- İyzico API (Test)
 
