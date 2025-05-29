@@ -16,6 +16,7 @@ namespace StoreApp.Data.Concrete
         public DbSet<Category> Categories { get; set; } // Kategoriler tablosu
         public DbSet<Order> Orders { get; set; } // Siparişler tablosu
         public DbSet<OrderItem> OrderItems { get; set; } // Sipariş öğeleri tablosu
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

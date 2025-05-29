@@ -99,14 +99,21 @@ namespace StoreApp.Web.Controllers
                 return View(model);
             }
 
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            // Kullanıcıyı hem UserName hem de Email ile ara
+            AppUser user = null;
+            // Önce UserName ile ara
+            user = await _userManager.FindByNameAsync(model.UserName);
+            // Eğer UserName ile bulunamazsa Email ile ara
             if (user == null)
             {
-                ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı");
-                return View(model);
+                user = await _userManager.FindByEmailAsync(model.UserName);
             }
 
-            // E-posta onayı kontrolü kaldırıldı
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Kullanıcı adı veya e-posta hatalı.");
+                return View(model);
+            }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: true, lockoutOnFailure: false);
             if (result.Succeeded)
@@ -118,9 +125,10 @@ namespace StoreApp.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı");
+            ModelState.AddModelError("", "Şifre hatalı.");
             return View(model);
         }
+
         [HttpGet]
         [HttpPost]
         public async Task<IActionResult> Logout()

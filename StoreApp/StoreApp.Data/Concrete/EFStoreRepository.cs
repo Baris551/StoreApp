@@ -1,5 +1,8 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StoreApp.Data.Abstract;
 
 namespace StoreApp.Data.Concrete;
@@ -7,87 +10,158 @@ namespace StoreApp.Data.Concrete;
 public class EFStoreRepository : IStoreRepository
 {
     private readonly StoreDbContext _context;
+    private readonly ILogger<EFStoreRepository> _logger;
 
-    public EFStoreRepository(StoreDbContext context)
+    public EFStoreRepository(StoreDbContext context, ILogger<EFStoreRepository> logger)
     {
-        _context = context;
+        _context = context; // Veritabanı bağlantısını başlatır
+        _logger = logger;   // Loglama nesnesini başlatır
     }
 
-    public IQueryable<Product> Products => _context.Products;
-    public IQueryable<Category> Categories => _context.Categories;
+    public IQueryable<Product> Products => _context.Products.AsQueryable();
+    public IQueryable<Category> Categories => _context.Categories.AsQueryable();
 
-    public void CreateProduct(Product product, List<int> categoryIds)
+    // Yeni bir ürün oluşturur ve isteğe bağlı olarak kategorilerle ilişkilendirir (asenkron)
+    public async Task CreateProductAsync(Product product, List<int> categoryIds = null)
     {
-        // Kategorileri veritabanından al ve ilişkilendir
-        var categories = _context.Categories
-            .Where(c => categoryIds.Contains(c.Id))
-            .ToList();
+        try
+        {
+            // Eğer kategori ID'leri verilmişse, bu kategorileri bul ve ürüne ekle
+            if (categoryIds != null && categoryIds.Any())
+            {
+                // Veritabanından verilen ID'lere sahip kategorileri getir
+                var categories = await _context.Categories
+                    .Where(c => categoryIds.Contains(c.Id))
+                    .ToListAsync();
+                product.Categories = categories; // Ürüne kategorileri bağla
+            }
 
-        product.Categories = categories;
-        
-        _context.Products.Add(product);
-        _context.SaveChanges();
+            // Ürünü veritabanına ekle
+            _context.Products.Add(product);
+            // Değişiklikleri veritabanına kaydet (asenkron)
+            await _context.SaveChangesAsync();
+            // Başarıyla kaydedildiğini logla
+            _logger.LogInformation($"Product created with ID: {product.Id}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while creating product.");
+            throw;
+        }
     }
 
+    // Yeni bir ürün oluşturur (senkron versiyonu, asenkron metodu çağırır)
     public void CreateProduct(Product entity)
     {
-        throw new NotImplementedException();
+        // Asenkron metodu senkron şekilde çalıştırır
+        CreateProductAsync(entity, null).GetAwaiter().GetResult();
     }
 
+    // Belirtilen ID'ye sahip ürünü getirir (kategorileriyle birlikte)
     public async Task<Product> GetProductByIdAsync(int id)
     {
-        return await _context.Products.FirstOrDefaultAsync(p => p.Id == id); // ; eklendi
-    }
+        // Ürünü ve ilişkili kategorilerini veritabanından getir
+        var product = await _context.Products
+            .Include(p => p.Categories) // Kategorileri de dahil et
+            .FirstOrDefaultAsync(p => p.Id == id); // ID'ye göre ürünü bul
 
-    public int GetProductCount(string category)
-    {
-        return string.IsNullOrEmpty(category)
-            ? Products.Count()
-            : Products
-                .Include(p => p.Categories)
-                .Count(p => p.Categories.Any(c => c.Url.ToLower() == category.ToLower()));
-    }
-
-    public IQueryable<Product> GetProductsByCategory(string category, int page, int pageSize)
-    {
-        // Tüm ürünleri al
-        var products = Products;
-
-        if (!string.IsNullOrEmpty(category))
+        // Eğer ürün bulunamazsa, uyarı logu yaz
+        if (product == null)
         {
-            var categoryUrl = category.ToLower();
-            Console.WriteLine($"Filtering by category URL: {categoryUrl}");
-
-            // ProductCategory ve Categories tablolarını birleştirerek doğrudan sorgu yap
-            var productIdsInCategory = _context.Set<ProductCategory>()
-                .Join(_context.Categories,
-                      pc => pc.CategoryId,
-                      c => c.Id,
-                      (pc, c) => new { pc.ProductId, c.Url })
-                .Where(x => x.Url.ToLower() == categoryUrl)
-                .Select(x => x.ProductId)
-                .Distinct();
-
-            Console.WriteLine($"Product IDs in category '{categoryUrl}': {string.Join(", ", productIdsInCategory)}");
-
-            products = products
-                .Where(p => productIdsInCategory.Contains(p.Id));
+            _logger.LogWarning($"Product with ID {id} not found.");
         }
 
-        var result = products
-            .OrderBy(p => p.Id)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize);
-
-        // Sorgu sonuçlarını kontrol et
-        var productIds = result.Select(p => p.Id).ToList();
-        Console.WriteLine($"Found products: {string.Join(", ", productIds)}");
-
-        return result;
+        return product;
     }
 
-    IEnumerable<Product> IStoreRepository.GetProductsByCategory(string category, int page, int pageSize)
+    // Belirtilen kategorideki ürün sayısını getirir (asenkron)
+    public async Task<int> GetProductCountAsync(string category)
     {
-        return GetProductsByCategory(category, page, pageSize);
+        try
+        {
+            // Eğer kategori belirtilmemişse, tüm ürünlerin sayısını döndür
+            if (string.IsNullOrEmpty(category))
+            {
+                return await _context.Products.CountAsync();
+            }
+
+            // Belirtilen kategoriye sahip ürünlerin sayısını getir
+            // EF.Functions.Like ile kategori URL'si büyük/küçük harf duyarsız karşılaştırılır
+            return await _context.Products
+                .Where(p => p.Categories.Any(c => EF.Functions.Like(c.Url.ToLower(), category.ToLower())))
+                .CountAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error while getting product count for category: {category}");
+            throw;
+        }
+    }
+
+    // Kategoriye göre ürünleri sayfalama ve sıralama ile getirir (asenkron)
+    public async Task<IQueryable<Product>> GetProductsByCategoryAsync(string category, int page, int pageSize, string sort = null)
+    {
+        try
+        {
+            // Ürünleri sorgulanabilir bir şekilde al
+            var products = _context.Products
+                .AsQueryable();
+
+            // Eğer kategori belirtilmişse, ürünleri o kategoriye göre filtrele
+            if (!string.IsNullOrEmpty(category))
+            {
+                var categoryUrl = category.ToLower(); // Kategori URL'sini küçük harfe çevir
+                _logger.LogInformation($"Filtering by category URL: {categoryUrl}");
+
+                // Kategoriye sahip ürünleri bul 
+                products = products
+                    .Where(p => p.Categories.Any(c => EF.Functions.Like(c.Url.ToLower(), categoryUrl)));
+            }
+
+            // Sıralama işlemi
+            if (!string.IsNullOrEmpty(sort))
+            {
+                switch (sort)
+                {
+                    case "price-asc": // Fiyata göre artan sıralama
+                        products = products.OrderBy(p => p.Price);
+                        break;
+                    case "price-desc": // Fiyata göre azalan sıralama
+                        products = products.OrderByDescending(p => p.Price);
+                        break;
+                    default: // Varsayılan olarak ID'ye göre sırala
+                        products = products.OrderBy(p => p.Id);
+                        break;
+                }
+            }
+            else
+            {
+                // Sıralama belirtilmemişse, ID'ye göre sırala
+                products = products.OrderBy(p => p.Id);
+            }
+
+            // Sayfalama işlemi: Belirtilen sayfadaki ürünleri al
+            var result = products
+                .Skip((page - 1) * pageSize) // Önceki sayfaları atla
+                .Take(pageSize); // Belirtilen sayıda ürün al
+
+            // Bulunan ürünlerin ID'lerini logla
+            var productIds = await result.Select(p => p.Id).ToListAsync();
+            _logger.LogInformation($"Found products: {string.Join(", ", productIds)}");
+
+            // Sonucu IQueryable olarak döndür
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error while getting products for category: {category}, page: {page}");
+            throw;
+        }
+    }
+
+    // Belirtilen kategorideki ürün sayısını getirir senkron, henüz uygulanmadı.
+    public int GetProductCount(string category)
+    {
+        throw new NotImplementedException();
     }
 }

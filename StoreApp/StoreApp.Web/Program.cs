@@ -13,13 +13,17 @@ using StoreApp.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Servis Tanımlamaları ---
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; ;
+    });//Döngüsel referans sorununu çözmek için JSON
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<Cart>(sc => SessionCart.GetCart(sc));
+builder.Services.AddSingleton<ILogger<MapperProfile>, Logger<MapperProfile>>();
 
 builder.Services.AddSession(options =>
 {
@@ -79,6 +83,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IStoreRepository, EFStoreRepository>();
 builder.Services.AddScoped<IOrderRepository, EFOrderRepository>();
+
 
 builder.Services.AddSwaggerGen(option =>
 {

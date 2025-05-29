@@ -5,19 +5,263 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="row">
+<div class="container mt-5 mb-5">
+    <div class="row product-detail-card shadow-lg rounded bg-white p-4">
+        <!-- Ürün Görseli -->
         <div class="col-md-6">
-            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name" style="max-height: 400px; object-fit: cover;">
+            <div class="product-image-wrapper position-relative">
+                <img src="@Model.ImageUrl" class="img-fluid rounded main-product-image" alt="@Model.Name" style="max-height: 450px; object-fit: cover; width: 100%;">
+                <!-- Kampanya/İndirim Badge -->
+                @if (Model.DiscountRate.HasValue && Model.DiscountRate > 0)
+                {
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-3 p-2 fs-6">
+                        %@Model.DiscountRate İndirim
+                    </span>
+                }
+                else if (!string.IsNullOrEmpty(Model.CampaignMessage))
+                {
+                    <span class="badge bg-success position-absolute top-0 start-0 m-3 p-2 fs-6">
+                        @Model.CampaignMessage
+                    </span>
+                }
+            </div>
         </div>
+
+        <!-- Ürün Bilgileri -->
         <div class="col-md-6">
-            <h2>@Model.Name</h2>
-            <p class="text-muted">@Model.Description</p>
-            <h4 class="text-primary mb-3">@Model.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</h4>
-            <form asp-page="/Cart" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-success">Sepete Ekle</button>
+            <h2 class="product-title mb-3">@Model.Name</h2>
+            <p class="text-muted product-description mb-4">@Model.Description</p>
+
+            <!-- Fiyat ve İndirim -->
+            <div class="price-section mb-4">
+                @if (Model.DiscountRate.HasValue && Model.DiscountRate > 0)
+                {
+                    var discountedPrice = Model.Price * (1 - Model.DiscountRate.Value / 100);
+                    <h4 class="text-danger d-inline me-3">@discountedPrice.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</h4>
+                    <span class="text-muted text-decoration-line-through">@Model.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</span>
+                }
+                else
+                {
+                    <h4 class="text-primary">@Model.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</h4>
+                }
+            </div>
+
+            <!-- Renk Seçenekleri -->
+            @if (Model.Colors?.Any() == true)
+            {
+                <div class="color-options mb-4">
+                    <h6 class="mb-2">Renk Seçenekleri:</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var color in Model.Colors)
+                        {
+                            <!-- Renk kodunun başında # olduğundan emin oluyoruz -->
+                            <button class="color-btn me-2" style="background-color: @(color.StartsWith("#") ? color : "#" + color);" data-color="@color" title="@color">
+                                <span class="visually-hidden">@color</span>
+                            </button>
+                        }
+                    </div>
+                    <input type="hidden" name="selectedColor" id="selectedColor" value="@Model.Colors.FirstOrDefault()" />
+                    <div class="selected-color-text mt-2">
+                        Seçili Renk: <span id="selectedColorText">@Model.Colors.FirstOrDefault()</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">Renk seçeneği mevcut değil.</p>
+            }
+
+            <!-- Stok Durumu -->
+            <div class="stock-status mb-4">
+                @if (Model.StockQuantity > 0)
+                {
+                    <span class="text-success"><i class="fas fa-check-circle"></i> Stokta: @Model.StockQuantity adet</span>
+                }
+                else
+                {
+                    <span class="text-danger"><i class="fas fa-times-circle"></i> Stokta Yok</span>
+                }
+            </div>
+
+            <!-- Sepete Ekle Butonu -->
+            <form asp-page="/Cart" asp-route-id="@Model.Id" method="post" style="display:inline;" id="addToCartForm">
+                <input type="hidden" name="color" id="formSelectedColor" value="@Model.Colors?.FirstOrDefault()" />
+                <button type="submit" class="btn btn-success btn-lg me-2" @(Model.StockQuantity <= 0 ? "disabled" : "")>
+                    <i class="fas fa-cart-plus"></i> Sepete Ekle
+                </button>
             </form>
-            <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Geri Dön</a>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-outline-secondary btn-lg">Geri Dön</a>
+
+            <!-- Paylaşım Butonları -->
+            <div class="share-section mt-4">
+                <h6 class="mb-2">Bu Ürünü Paylaş:</h6>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=@Url.Action("Details", "Product", new { id = Model.Id }, protocol: Context.Request.Scheme)" target="_blank" class="btn btn-sm btn-outline-primary me-1">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://twitter.com/intent/tweet?url=@Url.Action("Details", "Product", new { id = Model.Id }, protocol: Context.Request.Scheme)&text=@Model.Name" target="_blank" class="btn btn-sm btn-outline-info me-1">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://wa.me/?text=@Url.Action("Details", "Product", new { id = Model.Id }, protocol: Context.Request.Scheme)" target="_blank" class="btn btn-sm btn-outline-success">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
         </div>
     </div>
+
+    <!-- Kampanya Bilgisi (Opsiyonel Ekstra Alan) -->
+    @if (!string.IsNullOrEmpty(Model.CampaignMessage))
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="fas fa-star me-2"></i>
+                    <span>@Model.CampaignMessage</span>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+@section Styles {
+    <style>
+        .product-detail-card {
+            border: 1px solid #e0e0e0;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .product-detail-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .product-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .price-section h4 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .color-options .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            box-shadow: none;
+        }
+
+        .color-options .color-btn:hover,
+        .color-options .color-btn.selected {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            transform: scale(1.2);
+        }
+
+        .selected-color-text {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .stock-status i {
+            margin-right: 5px;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-outline-secondary {
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .share-section a {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .alert-info {
+            background-color: #e7f3ff;
+            border: none;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorButtons = document.querySelectorAll('.color-btn');
+            const selectedColorInput = document.getElementById('selectedColor');
+            const formSelectedColorInput = document.getElementById('formSelectedColor');
+            const selectedColorText = document.getElementById('selectedColorText');
+
+            // Renk butonlarının varlığını kontrol et
+            if (colorButtons.length === 0) {
+                console.warn('Renk butonları bulunamadı. Model.Colors boş olabilir.');
+                return;
+            }
+
+            // Renk butonlarına tıklama olayı ekle
+            colorButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // Tüm butonlardan 'selected' sınıfını kaldır
+                    colorButtons.forEach(b => b.classList.remove('selected'));
+                    // Tıklanan butona 'selected' sınıfını ekle
+                    this.classList.add('selected');
+                    // Seçilen rengi gizli input'lara ve metne yaz
+                    const selectedColor = this.getAttribute('data-color');
+                    if (selectedColor) {
+                        selectedColorInput.value = selectedColor;
+                        formSelectedColorInput.value = selectedColor;
+                        if (selectedColorText) {
+                            selectedColorText.textContent = selectedColor;
+                        }
+                    } else {
+                        console.error('Seçilen renk geçersiz:', this);
+                    }
+                });
+            });
+
+            // İlk rengi varsayılan olarak seç
+            const firstColorBtn = colorButtons[0];
+            if (firstColorBtn) {
+                firstColorBtn.classList.add('selected');
+                const firstColor = firstColorBtn.getAttribute('data-color');
+                if (firstColor) {
+                    selectedColorInput.value = firstColor;
+                    formSelectedColorInput.value = firstColor;
+                    if (selectedColorText) {
+                        selectedColorText.textContent = firstColor;
+                    }
+                }
+            }
+
+            // Hata ayıklama için Model.Colors içeriğini logla
+            console.log('Model.Colors:', @Json.Serialize(Model.Colors));
+        });
+    </script>
+}

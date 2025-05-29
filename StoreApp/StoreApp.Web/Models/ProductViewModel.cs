@@ -9,6 +9,10 @@ public class ProductViewModel
     public string? Description { get; set; }
     public decimal Price { get; set; }
     public string ImageUrl { get; set; } // Fotoğraf dosya yolu
+    public int StockQuantity { get; set; } // Stok durumu
+    public decimal? DiscountRate { get; set; } // İndirim oranı (% olarak)
+    public string CampaignMessage { get; set; } // Kampanya mesajı (örneğin, "Son 3 Gün!")
+    public List<string> Colors { get; set; } // Renk seçenekleri (örneğin, ["#FF0000", "#00FF00"])
 }
 // Birden fazla ürünün listelendiği view için kullanılan model.
 // Genellikle ürünlerin listelendiği sayfalarda kullanılır.

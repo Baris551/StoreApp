@@ -1,16 +1,35 @@
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using StoreApp.Data.Concrete;
 using StoreApp.Web.Models;
 
 namespace StoreApp.Web.Models
 {
-    // AutoMapper eşleştirmelerini tanımlayan sınıf
     public class MapperProfile : Profile
     {
+        private readonly ILogger<MapperProfile>? _logger; // Nullable hale getirildi
+
+        // Parametresiz yapıcı
         public MapperProfile()
         {
+            ConfigureMappings();
+        }
+
+        // ILogger ile yapıcı (opsiyonel)
+        public MapperProfile(ILogger<MapperProfile> logger) : this()
+        {
+            _logger = logger;
+        }
+
+        private void ConfigureMappings()
+        {
             // Product -> ProductViewModel
-            CreateMap<Product, ProductViewModel>();
+            CreateMap<Product, ProductViewModel>()
+                .ForMember(dest => dest.StockQuantity, opt => opt.MapFrom(src => src.StockQuantity))
+                .ForMember(dest => dest.DiscountRate, opt => opt.MapFrom(src => src.DiscountRate ?? 0))
+                .ForMember(dest => dest.CampaignMessage, opt => opt.MapFrom(src => src.CampaignMessage ?? string.Empty))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl ?? "/images/default-product.jpg"))
+                .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.Colors != null ? src.Colors.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>()));
 
             // OrderViewModel -> Order
             CreateMap<OrderViewModel, Order>()
@@ -31,7 +50,7 @@ namespace StoreApp.Web.Models
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Product != null ? src.Product.Price * src.Quantity : 0m))
                 .AfterMap((src, dest) =>
                 {
-                    Console.WriteLine($"CartItem’dan OrderItem’a dönüşüm - ProductName: {dest.ProductName}, Quantity: {dest.Quantity}, Price: {dest.Price}");
+                    _logger?.LogInformation($"CartItem’dan OrderItem’a dönüşüm - ProductName: {dest.ProductName}, Quantity: {dest.Quantity}, Price: {dest.Price}");
                 });
 
             // Order -> CheckoutCompletedViewModel

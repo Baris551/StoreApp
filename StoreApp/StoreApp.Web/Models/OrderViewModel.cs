@@ -27,9 +27,5 @@ public class OrderViewModel
     
     public string Cvc { get; set; }
     
-
-
-
-    
 }
 

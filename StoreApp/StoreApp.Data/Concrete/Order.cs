@@ -16,8 +16,9 @@ namespace StoreApp.Data.Concrete
         public string? AddressLine { get; set; } // Teslimat adresi
         public decimal TotalAmount { get; set; } // Toplam tutar
         public List<OrderItem> OrderItems { get; set; } = new(); // Sipariş öğeleri
+        public string? TrackingNumber { get; set; } // Yeni alan: Kargo takip numarası
 
-        public string OrderStatus { get; set; } // Pending, Completed, Failed
+        public string OrderStatus { get; set; } // beklemede, tamamlandı, iptal
     }
 
     // Sipariş öğesini temsil eden sınıf

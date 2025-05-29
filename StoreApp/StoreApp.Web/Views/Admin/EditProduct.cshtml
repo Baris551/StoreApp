@@ -1,77 +1,183 @@
 ﻿@model StoreApp.Web.DTO.ProductDTO
 
-<h2>Ürünü Güncelle</h2>
+<!-- Bu sayfa, mevcut bir ürünü düzenlemek için bir form gösterir -->
+<div class="container mt-5">
+    <!-- Sayfanın başlığı -->
+    <h2 class="mb-4 text-primary">Ürünü Güncelle</h2>
 
-<form asp-action="EditProduct" asp-controller="Admin" method="post" enctype="multipart/form-data" id="editProductForm">
-    <input type="hidden" asp-for="Id" />
-
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label">Ürün Adı</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label">Fiyat</label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label">Açıklama</label>
-        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Mevcut Fotoğraf</label>
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-        {
-            <div>
-                <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 200px;" />
-            </div>
-        }
-        else
-        {
-            <p>Resim yok</p>
-        }
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="ImageFile" class="form-label">Yeni Fotoğraf Yükle (İsteğe Bağlı)</label>
-        <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" id="imageFile" />
-        <span asp-validation-for="ImageFile" class="text-danger"></span>
-        <img id="imagePreview" src="#" alt="Önizleme" style="display: none; max-width: 200px; margin-top: 10px;" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Kategoriler</label>
-        <div class="form-check">
-            @foreach (var category in Model.AvailableCategories)
-            {
-                <div>
-                    <input type="checkbox" 
-                           name="CategoryIds" 
-                           value="@category.Id" 
-                           class="form-check-input category-checkbox" 
-                           id="category-@category.Id" 
-                           @(Model.CategoryIds.Contains(category.Id) ? "checked" : "") />
-                    <label class="form-check-label" for="category-@category.Id">
-                        @category.Name (ID: @category.Id)
-                    </label>
-                </div>
-            }
+    <!-- Eğer bir hata mesajı varsa, kullanıcıya gösteriyoruz -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
         </div>
-        <span id="category-validation" class="text-danger" style="display: none;">En az bir kategori seçmelisiniz.</span>
-    </div>
+    }
 
-    <button type="submit" class="btn btn-primary">Güncellemeyi Kaydet</button>
-    <a asp-action="Index" asp-controller="Admin" class="btn btn-secondary">İptal</a>
-</form>
+    <!-- Formu oluşturuyoruz. asp-action ve asp-controller ile formun nereye gönderileceğini belirtiyoruz -->
+    <!-- enctype="multipart/form-data" ile resim dosyası yükleyebilmek için gerekli ayarı yapıyoruz -->
+    <form asp-action="EditProduct" asp-controller="Admin" method="post" enctype="multipart/form-data" id="editProductForm" class="needs-validation" novalidate>
+        <!-- Ürünün ID’sini gizli bir alanda tutuyoruz ki güncelleme sırasında hangi ürünü güncellediğimizi bilelim -->
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Formun görünümünü güzel yapmak için bir kart (card) kullanıyoruz -->
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-5">
+                <!-- Formu iki sütuna ayırıyoruz (row ile) -->
+                <div class="row">
+                    <!-- Sol sütun -->
+                    <div class="col-md-6">
+                        <!-- Ürün adı alanı -->
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-bold text-dark">Ürün Adı</label>
+                            <input asp-for="Name" class="form-control form-control-lg rounded-3 shadow-sm" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="invalid-feedback">Lütfen ürün adını girin.</div>
+                        </div>
+
+                        <!-- Fiyat alanı -->
+                        <div class="mb-4">
+                            <label asp-for="Price" class="form-label fw-bold text-dark">Fiyat</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white rounded-start">₺</span>
+                                <input asp-for="Price" class="form-control form-control-lg rounded-end shadow-sm" type="number" step="0.01" required />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                            <div class="invalid-feedback">Lütfen fiyatı girin.</div>
+                        </div>
+
+                        <!-- Stok miktarı alanı -->
+                        <div class="mb-4">
+                            <label asp-for="StockQuantity" class="form-label fw-bold text-dark">Stok Miktarı</label>
+                            <input asp-for="StockQuantity" class="form-control form-control-lg rounded-3 shadow-sm" type="number" min="0" required />
+                            <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                            <div class="invalid-feedback">Lütfen stok miktarını girin.</div>
+                        </div>
+
+                        <!-- İndirim oranı alanı -->
+                        <div class="mb-4">
+                            <label asp-for="DiscountRate" class="form-label fw-bold text-dark">İndirim Oranı (%)</label>
+                            <input asp-for="DiscountRate" class="form-control form-control-lg rounded-3 shadow-sm" type="number" step="0.01" min="0" max="100" placeholder="Örnek: 20" />
+                            <span asp-validation-for="DiscountRate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Kampanya mesajı alanı -->
+                        <div class="mb-4">
+                            <label asp-for="CampaignMessage" class="form-label fw-bold text-dark">Kampanya Mesajı</label>
+                            <input asp-for="CampaignMessage" class="form-control form-control-lg rounded-3 shadow-sm" placeholder="Örnek: Son 3 Gün!" />
+                            <span asp-validation-for="CampaignMessage" class="text-danger"></span>
+                        </div>
+
+                        <!-- Renk seçenekleri alanı -->
+                        <div class="mb-4">
+                            <label asp-for="Colors" class="form-label fw-bold text-dark">Renk Seçenekleri</label>
+                            <!-- Mevcut renkleri gösteriyoruz -->
+                            <div id="colorPickerContainer" class="d-flex flex-wrap gap-2 mb-2">
+                                @if (!string.IsNullOrEmpty(Model.Colors))
+                                {
+                                    var colors = Model.Colors.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                    foreach (var color in colors)
+                                    {
+                                        <!-- Mevcut renkleri renk seçicilere yüklüyoruz -->
+                                        <input type="color" class="color-picker form-control-color me-2" value="@(color.StartsWith('#') ? color : '#' + color)" onchange="updateColors()">
+                                    }
+                                }
+                                else
+                                {
+                                    <!-- Eğer renk yoksa, varsayılan bir renk seçici ekliyoruz -->
+                                    <input type="color" class="color-picker form-control-color me-2" value="#000000" onchange="updateColors()">
+                                }
+                            </div>
+                            <!-- Daha fazla renk seçici eklemek için bir buton -->
+                            <button type="button" class="btn btn-outline-primary btn-sm mb-2" onclick="addColorPicker()">+ Renk Ekle</button>
+                            <input asp-for="Colors" id="Colors" class="form-control form-control-lg rounded-3 shadow-sm" readonly placeholder="Seçilen renkler burada görünecek" />
+                            <span asp-validation-for="Colors" class="text-danger"></span>
+                            <small class="form-text text-muted">Renkleri seçin, kodlar otomatik olarak virgülle ayrılmış şekilde eklenecek.</small>
+                        </div>
+
+                        <!-- Açıklama alanı -->
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold text-dark">Açıklama</label>
+                            <textarea asp-for="Description" class="form-control form-control-lg rounded-3 shadow-sm" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Sağ sütun -->
+                    <div class="col-md-6">
+                        <!-- Mevcut resmi gösteriyoruz -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Mevcut Fotoğraf</label>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <!-- Eğer ürünün resmi varsa, resmi gösteriyoruz -->
+                                <div>
+                                    <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 200px; border-radius: 5px;" />
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Eğer resim yoksa, bir mesaj gösteriyoruz -->
+                                <p class="text-muted">Resim yok</p>
+                            }
+                        </div>
+
+                        <!-- Yeni resim yükleme alanı -->
+                        <div class="mb-4">
+                            <label asp-for="ImageFile" class="form-label fw-bold text-dark">Yeni Fotoğraf Yükle (İsteğe Bağlı)</label>
+                            <!-- required attribute’ü yok, yani bu alan zorunlu değil -->
+                            <input asp-for="ImageFile" class="form-control form-control-lg rounded-3 shadow-sm" type="file" accept="image/*" id="imageFile" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            <!-- Yüklenen resmin önizlemesi burada gösterilecek -->
+                            <img id="imagePreview" src="#" alt="Önizleme" style="display: none; max-width: 200px; margin-top: 10px; border-radius: 5px;" />
+                        </div>
+
+                        <!-- Kategori seçimi alanı -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Kategoriler</label>
+                            <div class="form-check">
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    <!-- Mevcut kategorileri listeliyoruz ve ürünün seçili kategorilerini işaretliyoruz -->
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" 
+                                               name="CategoryIds" 
+                                               value="@category.Id" 
+                                               class="form-check-input category-checkbox" 
+                                               id="category-@category.Id" 
+                                               @(Model.CategoryIds.Contains(category.Id) ? "checked" : "") />
+                                        <label class="form-check-label text-dark" for="category-@category.Id">
+                                            @category.Name (ID: @category.Id)
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <span id="category-validation" class="text-danger" style="display: none;">En az bir kategori seçmelisiniz.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formun altındaki butonlar -->
+                <div class="d-flex justify-content-end mt-4">
+                    <!-- Güncellemeyi kaydetmek için buton -->
+                    <button type="submit" class="btn btn-primary btn-lg me-2 rounded-pill shadow-sm">Güncellemeyi Kaydet</button>
+                    <!-- İptal butonu, kullanıcıyı ürün listesine geri götürür -->
+                    <a asp-action="Index" asp-controller="Admin" class="btn btn-secondary btn-lg rounded-pill shadow-sm">İptal</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
+    <!-- JavaScript kütüphanelerini yüklüyoruz -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpcc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <partial name="_ValidationScriptsPartial" />
+
     <script>
+        // Kullanıcı bir resim seçtiğinde, resmi önizleme olarak gösteriyoruz
         document.getElementById('imageFile').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file) {
@@ -85,17 +191,49 @@
             }
         });
 
+        // Yeni bir renk seçici eklemek için fonksiyon
+        function addColorPicker() {
+            const container = document.getElementById('colorPickerContainer');
+            const newPicker = document.createElement('input');
+            newPicker.type = 'color';
+            newPicker.className = 'color-picker form-control-color me-2';
+            newPicker.value = '#000000';
+            newPicker.onchange = updateColors;
+            container.appendChild(newPicker);
+        }
+
+        // Kullanıcı renk seçtiğinde, seçilen renkleri birleştirip Colors alanına yazıyoruz
+        function updateColors() {
+            const pickers = document.querySelectorAll('.color-picker');
+            const colors = Array.from(pickers)
+                .map(picker => picker.value.replace('#', ''))
+                .filter(color => color !== '');
+            document.getElementById('Colors').value = colors.join(',');
+        }
+
+        // Form gönderildiğinde bazı kontroller yapıyoruz
         document.getElementById('editProductForm').addEventListener('submit', function (event) {
             const checkboxes = document.querySelectorAll('.category-checkbox');
             const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
             const validationMessage = document.getElementById('category-validation');
 
             if (!anyChecked) {
-                event.preventDefault();
                 validationMessage.style.display = 'block';
             } else {
                 validationMessage.style.display = 'none';
             }
+
+            const form = event.currentTarget;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
         });
+
+        // Sayfaya ilk yüklendiğinde renkleri güncelliyoruz
+        window.onload = function() {
+            updateColors();
+        };
     </script>
 }
